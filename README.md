@@ -53,10 +53,10 @@ function setup() {
 ```
 > Si queremos eliminarlo podemos usar la función removeChild() de la misma forma que addChild()
 ### Propiedades 
-- *Tamaño*<br>
+- **Tamaño**<br>
 Para obtener el tamaño en pixeles del sprite se usa las propiedades **sprite.width** y **sprite.height**
 
-- *Posición*<br>
+- **Posición**<br>
 Los valores de posición se usan mediante coordenadas cartesianas (x, y), siendo la esquina superior izquiera el punto (0,0). Por defecto, agregar un sprite se ubica en la posición (0,0), si queremos cambiar su posición lo podemos hacer con las propiedades **x** y **y**, por ejemplo, para hubicarlo en el centro podemos hacerlo de la sigueinte forma:
 
 ```javascript 
@@ -67,7 +67,7 @@ Los valores de posición se usan mediante coordenadas cartesianas (x, y), siendo
 
 Si retornamos la posición de un sprite nos da la ubicación del punto de la esquina superior derecha del mismo, esto se puede cambiar con la propiedad **pivot**
 
-- *Escalado* <br>
+- **Escalado** <br>
 Para cambiar el tamaño de un sprite se puede usar **sprite.width** y **sprite.height** asignado valores fijos, o se puede hacer mas eficientemente usando la propiedad **sprite.scale.x** y **sprite.scale.y**.
 
 Para reducir el tamaño a la mitad :
@@ -77,7 +77,7 @@ Para reducir el tamaño a la mitad :
 ```
 > También es posible usar scorpio.scale.set(x, y)
 
-- *Rotación* <br>
+- **Rotación** <br>
 La rotación se hace a traves de la propiedad **sprite.rotation**, se asigna un valor en radianes.
 ```javascript 
     scorpio.rotation  = 0.5;
