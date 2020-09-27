@@ -1,4 +1,4 @@
-# 1. Setup
+# 1. Sprites
 
 Se debe de definir los valores de las variables *w* y *h* para definir el tamaño de la ventana de pixi
 ```javascript 
