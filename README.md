@@ -3,15 +3,15 @@ Este tutorial esta basado en el juego clásico *Mortal Kombat*.
 
 **Contenido**
 
-[1. Setup](https://github.com/luisemonsalve/tutorial-pixijs/tree/1-Setup)<br><br>
-[2. Sprites](https://github.com/luisemonsalve/tutorial-pixijs/tree/2-Sprites)<br>
+- [1. Setup](https://github.com/luisemonsalve/tutorial-pixijs/tree/1-Setup)<br><br>
+- [2. Sprites](https://github.com/luisemonsalve/tutorial-pixijs/tree/2-Sprites)<br>
    - Crear un Sprite
    - Mostrar un Sprite
    - Propiedades<br>
-[3. AnimatedSprites](https://github.com/luisemonsalve/tutorial-pixijs/tree/3-AnimatedSprites)<br>
+- [3. AnimatedSprites](https://github.com/luisemonsalve/tutorial-pixijs/tree/3-AnimatedSprites)<br>
    - Crear un AnimatedSprites
    - Propiedades<br>
-[4. Movimiento y velocidad](https://github.com/luisemonsalve/tutorial-pixijs/tree/4-Movimiento)<br>
+- [4. Movimiento y velocidad](https://github.com/luisemonsalve/tutorial-pixijs/tree/4-Movimiento)<br>
    - Agregar movimiento a un Sprite
    - Eventos de teclado<br>
 [5. TilingSprites](https://github.com/luisemonsalve/tutorial-pixijs/tree/5-TilingSprites)<br>
