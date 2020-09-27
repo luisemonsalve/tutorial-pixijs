@@ -30,3 +30,7 @@ Este tutorial esta basado en el juego clásico *Mortal Kombat*.
 ##Hold and Drag
 ##Filters
 
+
+# 1. Setup
+# 2. Sprites
+## Crear un Sprite
