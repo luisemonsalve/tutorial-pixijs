@@ -132,6 +132,13 @@
             scorpio_k.stop();
             scorpio_k.visible = false;
             isWalkLock = false;
+            if (collision(scorpio.x, scorpio_k.width, liukang.x, -liukang.width)) {
+                liukang_s.visible = false;
+                liukang_h.visible = true;
+                liukang_h.play();
+                liukang.vx = 1;
+                playSound('hit1', 1);
+            }
             if (isWalking) {
                 scorpio_w.visible = true;
             } else {
@@ -154,6 +161,18 @@
         liukang_s.loop = true;
         // liukang_s.visible = false;
         liukang.addChild(liukang_s);
+
+        liukang_h = new AnimatedSprite(sheet_liu.animations['liu_beaing_hit']);
+        liukang_h.animationSpeed = 0.2;
+        liukang_h.loop = true;
+        liukang_h.visible = false;
+        liukang_h.onLoop = function () {
+            liukang_h.stop();
+            liukang_h.visible = false;
+            liukang_s.visible = true;
+            liukang.vx = 0;
+        };
+        liukang.addChild(liukang_h)
 
         liukang.y = h - liukang.height - 25
         liukang.x = 2 * w / 3 + liukang.width / 2
