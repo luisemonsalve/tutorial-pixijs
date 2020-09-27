@@ -17,6 +17,8 @@
     integrity="sha512-J7UHpLx39bpqtP+aWP6yIuXroFk0XPkDQaS9zDthM4TVeaXstWYh556gxsXwwIwpAPSoKqVHW+eqz3B93SpyKg=="
     crossorigin="anonymous"></script>
 <script>
+    var w = 760;
+    var h = 478;
     //Alias
     let Application = PIXI.Application,
         Container = PIXI.Container,
@@ -52,8 +54,9 @@
             forceCanvas: fCanvas,
             view: document.getElementById("game-canvas")
         });
-        app.renderer.backgroundColor = "0x5DA6C2";
-        app.renderer.autoDensity = true;
+        app.renderer.backgroundColor = "0x6200EA";
+        app.renderer.autoResize = true;
+        app.renderer.resize(w, h);
         loader.load(setup);
     }
 
