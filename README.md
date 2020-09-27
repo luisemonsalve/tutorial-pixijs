@@ -29,4 +29,4 @@ Se debe de definir los valores de las variables *w* y *h* para definir el tamañ
 
 Agregamos la linea `` para cambiar el color de fondo, si desplegamos la aplicación deberiamos ver un cuadro azúl
 
-![Stage](https://raw.githubusercontent.com/luisemonsalve/tutorial-pixijs/tree/1-Setup/readme_src/1.png)
+![Stage](https://raw.githubusercontent.com/luisemonsalve/tutorial-pixijs/blob/1-Setup/readme_src/1.png)
