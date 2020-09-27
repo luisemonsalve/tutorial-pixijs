@@ -3,7 +3,7 @@ Este tutorial esta basado en el juego clásico *Mortal Kombat*.
 
 **Contenido**
 
-- [1. Setup](https://github.com/luisemonsalve/tutorial-pixijs/tree/1-Setup)
+[1. Setup](https://github.com/luisemonsalve/tutorial-pixijs/tree/1-Setup)<br>
 - [2. Sprites](https://github.com/luisemonsalve/tutorial-pixijs/tree/2-Sprites)
    - Crear un Sprite
    - Mostrar un Sprite
