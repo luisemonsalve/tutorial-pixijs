@@ -1,4 +1,4 @@
-# 3. Movimiento y velocidad
+# 4. Movimiento y velocidad
 
 A continuación se describen los comandos y funciones para agregar movimiento a los sprites
 
