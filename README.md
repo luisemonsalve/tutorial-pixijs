@@ -52,7 +52,7 @@ function setup() {
     gameScene.addChild(scorpio) 
 ```
 > Si queremos eliminarlo podemos usar la función removeChild() de la misma forma que addChild()
-### Propiedades 
+## Propiedades 
 - **Tamaño**<br>
 Para obtener el tamaño en pixeles del sprite se usa las propiedades **sprite.width** y **sprite.height**
 
@@ -93,5 +93,5 @@ Para cambiar el punto desde donde se rota se puede hacer de dos forma, usando la
 
 
 
-### Referentes:
+## Referentes:
 - [PIXI.Sprite](https://pixijs.download/dev/docs/PIXI.Sprite.html "PIXI.Sprite")
