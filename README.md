@@ -2,7 +2,7 @@
 
 Los [Sprites](https://pixijs.download/dev/docs/PIXI.Sprite.html "Sprites") son la base para todos los objetos texturizados que se representan en la pantalla.
 
-### Crear un Sprite
+## Crear un Sprite
 Hay varias formas de crear un Sprite a partir de una imagen
 - Importar directamente la imagen
 
@@ -37,7 +37,7 @@ function setup() {
 }
 ```
 
-### Mostrar un Sprite
+## Mostrar un Sprite
 - Cargar la imagen desde el inicio
 ```javascript 
     loader
