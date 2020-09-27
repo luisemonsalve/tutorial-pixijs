@@ -24,7 +24,8 @@ Se debe de definir los valores de las variables *w* y *h* para definir el tamañ
         app.renderer.resize(w, h);
         loader.load(setup);
     }
-);```
+);
+```
 
 Agregamos la linea `` para cambiar el color de fondo, si desplegamos la aplicación deberiamos ver un cuadro azúl
 
