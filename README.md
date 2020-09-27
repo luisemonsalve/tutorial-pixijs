@@ -3,8 +3,8 @@ Este tutorial esta basado en el juego clásico *Mortal Kombat*.
 
 **Contenido**
 
-- 1. Setup
-- 2. Sprites
+1. Setup
+2. Sprites
    - Crear un Sprite
 ##Mostrar un Sprite
 ##Propiedades
