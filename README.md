@@ -7,7 +7,8 @@ Hay dos formas muy utilizadas para crear un AnimatedSprite
 - A partir de imagenes cargadas
 
 ```javascript 
-    let bgImages = ["src/bg/bg0.jpg", "src/bg/bg1.jpg", "src/bg/bg2.jpg", "src/bg/bg3.jpg", "src/bg/bg4.jpg",
+    let bgImages = ["src/bg/bg0.jpg", "src/bg/bg1.jpg", "src/bg/bg2.jpg",
+            "src/bg/bg3.jpg", "src/bg/bg4.jpg",
             "src/bg/bg5.jpg", "src/bg/bg6.jpg", "src/bg/bg7.jpg"
         ];
     let textureArray = [];
