@@ -343,5 +343,16 @@
         }
     });
 </script>
+<script src="https://code.createjs.com/1.0.0/createjs.min.js"></script>
+<script>
+    function loadSound() {
+        createjs.Sound.registerSound("sounds/sound.mp3", 'sound1');
+    }
+
+    function playSound(soundID, vol) {
+        var instance = createjs.Sound.play(soundID);
+        instance.volume = vol;
+    }
+</script>
 
 </html>
