@@ -2,7 +2,7 @@
 
 Los [Sprites](https://pixijs.download/dev/docs/PIXI.Sprite.html "Sprites") son la base para todos los objetos texturizados que se representan en la pantalla.
 
-### Formas de crear un sprite
+### Crear un Sprite
 - Importar directamente la imagen
 
 ```javascript 
@@ -92,5 +92,5 @@ Para cambiar el punto desde donde se rota se puede hacer de dos forma, usando la
 
 
 
-Referentes:
+### Referentes:
 - [PIXI.Sprite](https://pixijs.download/dev/docs/PIXI.Sprite.html "PIXI.Sprite")
