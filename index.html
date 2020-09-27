@@ -42,7 +42,16 @@
         console.log('Supported')
     }
     loader
-        .add('scorpio', 'src/scorpio/stance_01.png')
+        .add("src/atlas-scorpio.json")
+        .add("src/atlas-liukang.json")
+        .add("src/bg/bg0.jpg")
+        .add("src/bg/bg1.jpg")
+        .add("src/bg/bg2.jpg")
+        .add("src/bg/bg3.jpg")
+        .add("src/bg/bg4.jpg")
+        .add("src/bg/bg5.jpg")
+        .add("src/bg/bg6.jpg")
+        .add("src/bg/bg7.jpg")
     loader.onProgress.add(loadProgressHandler)
 
     function init() {
@@ -56,6 +65,7 @@
         });
         app.renderer.backgroundColor = "0x6200EA";
         app.renderer.autoResize = true;
+        app.renderer.resize(w, h);
         loader.load(setup);
     }
 
@@ -69,6 +79,8 @@
     }
 
     function setup() {
+        sheet_liu = resources["src/atlas-liukang.json"].spritesheet;
+        sheet_scorpio = resources["src/atlas-scorpio.json"].spritesheet;
 
         //Crea escena principal
         gameScene = new Container();
@@ -79,13 +91,53 @@
         app.stage.addChild(gameOverScene);
         gameOverScene.visible = false;
 
-        var scorpio = new Sprite(resources["scorpio"].texture);
-        scorpio.x = (w / 2) - (scorpio.width / 2);
-        scorpio.y = (h / 2) - (scorpio.height / 2);
-        scorpio.scale.set(0.5, 0.5);
-        scorpio.rotation = 0.3;
+        //Elmentos del stage
+        let bgImages = ["src/bg/bg0.jpg", "src/bg/bg1.jpg", "src/bg/bg2.jpg", "src/bg/bg3.jpg", "src/bg/bg4.jpg",
+            "src/bg/bg5.jpg", "src/bg/bg6.jpg", "src/bg/bg7.jpg"
+        ];
+        let textureArray = [];
 
+        for (let i = 0; i < bgImages.length; i++) {
+            let texture = resources[bgImages[i]].texture;
+            textureArray.push(texture);
+        };
+
+        var bg = new AnimatedSprite(textureArray);
+        bg.animationSpeed = 0.13
+        bg.play()
+        gameScene.addChild(bg)
+
+        //Personaje 1: Scorpio
+        var scorpio = new Container();
+        scorpio_s = new AnimatedSprite(sheet_scorpio.animations['stance']);
+        scorpio_s.animationSpeed = 0.2;
+        scorpio_s.play();
+        scorpio_s.loop = true;
+        scorpio.addChild(scorpio_s)
+
+        scorpio.y = h - scorpio.height - 25
+        scorpio.x = w / 3 - scorpio.width / 2
+        scorpio.vx = 0
         gameScene.addChild(scorpio)
+
+        //Personaje 2: Liu Kang
+
+        var liukang = new Container();
+        var liukang_s = new AnimatedSprite(sheet_liu.animations['liu_stance']);
+        liukang_s.animationSpeed = 0.2;
+        liukang_s.play();
+        liukang_s.loop = true;
+        // liukang_s.visible = false;
+        liukang.addChild(liukang_s);
+
+        liukang.y = h - liukang.height - 25
+        liukang.x = 2 * w / 3 + liukang.width / 2
+        liukang.vx = 0
+        liukang.scale.x *= -1;
+        gameScene.addChild(liukang)
+
+
+
 
         //Estado del juego: `play`
         state = play;

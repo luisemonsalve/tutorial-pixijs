@@ -1,57 +1,39 @@
-# 2. Sprites
+# 3. AnimatedSprites
 
-Los [Sprites](https://pixijs.download/dev/docs/PIXI.Sprite.html "Sprites") son la base para todos los objetos texturizados que se representan en la pantalla.
+Los [AnimatedSprites](https://pixijs.download/dev/docs/PIXI.AnimatedSprite.html "AnimatedSprites") son una forma sencilla de mostrar una animación representada por una lista de texturas.
 
-## Crear un Sprite
-Hay varias formas de crear un Sprite a partir de una imagen
-- Importar directamente la imagen
+## Crear un AnimatedSprite
+Hay dos formas muy utilizadas para crear un AnimatedSprite 
+- A partir de imagenes cargadas
 
 ```javascript 
-var scorpio = PIXI.Sprite.from('src/scorpio/stance_01.png');     
+    let bgImages = ["src/bg/bg0.jpg", "src/bg/bg1.jpg", "src/bg/bg2.jpg", "src/bg/bg3.jpg", "src/bg/bg4.jpg",
+            "src/bg/bg5.jpg", "src/bg/bg6.jpg", "src/bg/bg7.jpg"
+        ];
+    let textureArray = [];
+
+    for (let i = 0; i < bgImages.length; i++) {
+        let texture = resources[bgImages[i]].texture;
+        textureArray.push(texture);
+    };
+
+    var bg = new AnimatedSprite(textureArray);
+    bg.animationSpeed = 0.13
+    bg.play()
+    gameScene.addChild(bg)    
 ```
-> En este método se cargan las imágenes cuando se crea el sprite
+> Este método es útil cuando las imagenes de la animación son pesadas o grandes.
 
-- Precargar imagen
+- A partir de un atlas
 ```javascript 
-PIXI.loader
-  .add('scorpio','src/scorpio/stance_01.png')
-  .load(setup);
-
-function setup() {
-  let sprite = new PIXI.Sprite(
-    PIXI.loader.resources["scorpio"].texture
-  );
-}
+    var liukang_s = new AnimatedSprite(sheet_liu.animations['liu_stance']);
+    liukang_s.animationSpeed = 0.2;
+    liukang_s.play();
+    liukang_s.loop = true;
+    gameScene.addChild(liukang_s)
 ```
 > Se cargan las imágenes desde que se abre el documento
 
-- Cargar imagen desde un atlas
-```javascript 
-PIXI.loader
-  .add('src/atlas-scorpio.json')
-  .load(setup);
-
-function setup() {
-    scorpioSheet = resources["atlas-scorpio.json"].spritesheet;
-    let sprite = new Sprite(scorpioSheet.textures["stance_01.png"]);
-}
-```
-
-## Mostrar un Sprite
-- Cargar la imagen desde el inicio
-```javascript 
-    loader
-       .add('scorpio','src/scorpio/stance_01.png')    
-```
-- Crear el sprite 
-```javascript 
-    var scorpio = new Sprite(resources["scorpio"].texture);  
-```
-- Agregar el sprite al Stage principal 
-```javascript 
-    gameScene.addChild(scorpio) 
-```
-> Si queremos eliminarlo podemos usar la función removeChild() de la misma forma que addChild()
 ## Propiedades 
 - **Tamaño**<br>
 Para obtener el tamaño en pixeles del sprite se usa las propiedades **sprite.width** y **sprite.height**
@@ -94,4 +76,4 @@ Para cambiar el punto desde donde se rota se puede hacer de dos forma, usando la
 
 
 ## Referentes:
-- [PIXI.Sprite](https://pixijs.download/dev/docs/PIXI.Sprite.html "PIXI.Sprite")
+- [AnimatedSprites](https://pixijs.download/dev/docs/PIXI.AnimatedSprite.html "AnimatedSprites")
