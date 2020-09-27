@@ -8,7 +8,7 @@
 </head>
 
 
-<body onload="init();" style="margin: 0;">
+<body onload="init(); loadSound();" style="margin: 0;">
     <div align="center" id="gameCanvas">
         <canvas id="game-canvas"></canvas>
     </div>
@@ -19,6 +19,8 @@
 <script>
     var w = 760;
     var h = 478;
+    var isWalking = false;
+    var isWalkLock = false;
     //Alias
     let Application = PIXI.Application,
         Container = PIXI.Container,
@@ -64,7 +66,7 @@
             view: document.getElementById("game-canvas")
         });
         app.renderer.backgroundColor = "0x6200EA";
-        app.renderer.autoResize = true;
+        app.renderer.autoDensity = true;
         app.renderer.resize(w, h);
         loader.load(setup);
     }
@@ -108,12 +110,35 @@
         gameScene.addChild(bg)
 
         //Personaje 1: Scorpio
-        var scorpio = new Container();
+        scorpio = new Container();
         scorpio_s = new AnimatedSprite(sheet_scorpio.animations['stance']);
         scorpio_s.animationSpeed = 0.2;
         scorpio_s.play();
         scorpio_s.loop = true;
         scorpio.addChild(scorpio_s)
+
+        scorpio_w = new AnimatedSprite(sheet_scorpio.animations['walking']);
+        scorpio_w.animationSpeed = 0.2;
+        scorpio_w.play();
+        scorpio_w.loop = true;
+        scorpio_w.visible = false;
+        scorpio.addChild(scorpio_w)
+
+        scorpio_k = new AnimatedSprite(sheet_scorpio.animations['kick']);
+        scorpio_k.animationSpeed = 0.2;
+        scorpio_k.loop = true;
+        scorpio_k.visible = false;
+        scorpio_k.onLoop = function () {
+            scorpio_k.stop();
+            scorpio_k.visible = false;
+            isWalkLock = false;
+            if (isWalking) {
+                scorpio_w.visible = true;
+            } else {
+                scorpio_s.visible = true;
+            }
+        };
+        scorpio.addChild(scorpio_k)
 
         scorpio.y = h - scorpio.height - 25
         scorpio.x = w / 3 - scorpio.width / 2
@@ -122,8 +147,8 @@
 
         //Personaje 2: Liu Kang
 
-        var liukang = new Container();
-        var liukang_s = new AnimatedSprite(sheet_liu.animations['liu_stance']);
+        liukang = new Container();
+        liukang_s = new AnimatedSprite(sheet_liu.animations['liu_stance']);
         liukang_s.animationSpeed = 0.2;
         liukang_s.play();
         liukang_s.loop = true;
@@ -137,7 +162,7 @@
         gameScene.addChild(liukang)
 
 
-
+        keyboardListener();
 
         //Estado del juego: `play`
         state = play;
@@ -151,7 +176,25 @@
     }
 
     function play(delta) {
+        scorpio.x += scorpio.vx
+        if (contain(scorpio, {
+                x: 0,
+                y: 0,
+                width: w,
+                height: h
+            })) {
+            scorpio.vx = 0;
+        }
 
+        liukang.x += liukang.vx
+        if (contain(liukang, {
+                x: 0,
+                y: 0,
+                width: w,
+                height: h
+            })) {
+            liukang.vx = 0;
+        }
     }
 
     function pause(delta) {
@@ -166,22 +209,50 @@
             x = keyboard("x");
 
         right.press = () => {
-            //Tecla derecha presionada
+            isWalking = true;
+            scorpio.vx = 2
+            if (!isWalkLock) {
+                scorpio_s.visible = false;
+                scorpio_w.visible = true;
+                scorpio_w.animationSpeed = 0.16;
+            }
         };
         right.release = () => {
-            //Tecla derecha liberada
+            isWalking = false;
+            scorpio.vx = 0
+            if (!isWalkLock) {
+                scorpio_s.visible = true;
+                scorpio_w.visible = false;
+            }
+
         };
         left.press = () => {
-
+            isWalking = true;
+            scorpio.vx = -2
+            if (!isWalkLock) {
+                scorpio_s.visible = false;
+                scorpio_w.visible = true;
+                scorpio_w.animationSpeed = -0.16;
+            }
         };
         left.release = () => {
-
+            isWalking = false;
+            scorpio.vx = 0
+            if (!isWalkLock) {
+                scorpio_s.visible = true;
+                scorpio_w.visible = false;
+            }
         };
         space.press = () => {
-
-        };
-        x.release = () => {
-
+            playSound('haa', 1)
+            playSound('patada', 0.5)
+            isWalkLock = true;
+            scorpio_s.visible = false;
+            scorpio_k.visible = true;
+            scorpio_w.visible = false;
+            scorpio_k.play();
+            playSound('haa', 1)
+            playSound('patada', 0.5)
         };
     }
 
@@ -407,7 +478,12 @@
 <script src="https://code.createjs.com/1.0.0/createjs.min.js"></script>
 <script>
     function loadSound() {
-        createjs.Sound.registerSound("sounds/sound.mp3", 'sound1');
+        createjs.Sound.registerSound("sounds/male/mk2-00603.mp3", 'haa');
+        createjs.Sound.registerSound("sounds/liukang/mk2-00244.mp3", 'haa_liu');
+        createjs.Sound.registerSound("sounds/hitsounds/mk2-00136.mp3", 'patada');
+        createjs.Sound.registerSound("sounds/hitsounds/mk2-00103.mp3", 'hit1');
+        createjs.Sound.registerSound("sounds/hitsounds/mk2-00139.mp3", 'puño_liu');
+        createjs.Sound.registerSound("sounds/hitsounds/mk2-00109.mp3", 'hit2');
     }
 
     function playSound(soundID, vol) {

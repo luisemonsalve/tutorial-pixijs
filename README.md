@@ -1,46 +1,32 @@
-# 3. AnimatedSprites
+# 3. Movimiento y velocidad
 
-Los [AnimatedSprites](https://pixijs.download/dev/docs/PIXI.AnimatedSprite.html "AnimatedSprites") son una forma sencilla de mostrar una animación representada por una lista de texturas.
+A continuación se describen los comandos y funciones para agregar movimiento a los sprites
 
-## Crear un AnimatedSprite
-Hay dos formas muy utilizadas para crear un AnimatedSprite 
-- A partir de imagenes cargadas
+## Agregar movimiento a un Sprite
+Para agregar movimiento a un sprite se debe usar la propiedad **vx** o **vy**, y en la función gameloop se debe actualizar el estado de la posición según esta propiedad.
 
 ```javascript 
-    let bgImages = ["src/bg/bg0.jpg", "src/bg/bg1.jpg", "src/bg/bg2.jpg",
-            "src/bg/bg3.jpg", "src/bg/bg4.jpg",
-            "src/bg/bg5.jpg", "src/bg/bg6.jpg", "src/bg/bg7.jpg"
-        ];
-    let textureArray = [];
+function play(delta) {    
+     scorpio.x += scorpio.vx
+     scorpio.y += scorpio.vy
+}
+```
 
-    for (let i = 0; i < bgImages.length; i++) {
-        let texture = resources[bgImages[i]].texture;
-        textureArray.push(texture);
+## Eventos de teclado
+Para el uso de eventos de teclado usaremos una función que se definió desde el inicio, donde definimos que tecla y que se ejecuta cuando se presiona o se libera.
+```javascript 
+    let right = keyboard("ArrowRight"),
+        left = keyboard("ArrowLeft"),
+        space = keyboard(" "),
+        x = keyboard("x");
+
+    right.press = () => {
+        isWalking = true;
+        scorpio.vx = 2;
     };
-
-    var bg = new AnimatedSprite(textureArray);
-```
-> Este método es útil cuando las imagenes de la animación son pesadas o grandes.
-
-- A partir de un atlas
-```javascript 
-    sheet_liu = resources["src/atlas-liukang.json"].spritesheet;
-    var liukang_s = new AnimatedSprite(sheet_liu.animations['liu_stance']);
-```
-
-## Propiedades 
-- **Velocidad de animación**<br>
-Para controlar la velocidad con la que se anima el sprite se usa la propiedad **sprite.animationSpeed**.
-
-- **Controlar animación**<br>
-Para reproducir la animación se usa **sprite.play()**, y para pararla **sprite.stop()**.
-
-- **Repeticiones** <br>
-Por defecto la animación tiene el loop activo, si queremos que se reproduca una sola vez podemos usar la propiedad loop de la siguiente forma **sprite.loop = false**. Si se pause despues de cada reproducción se puede usar la función onLoop de la siguiente forma:
-
-```javascript 
-    sprite.onLoop = function () {
-        sprite.stop();
+    right.release = () => {
+        isWalking = false;
+        scorpio.vx = 0;
     };
 ```
 
