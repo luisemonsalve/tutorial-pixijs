@@ -17,6 +17,8 @@
     integrity="sha512-J7UHpLx39bpqtP+aWP6yIuXroFk0XPkDQaS9zDthM4TVeaXstWYh556gxsXwwIwpAPSoKqVHW+eqz3B93SpyKg=="
     crossorigin="anonymous"></script>
 <script>
+    var w = 760;
+    var h = 478;
     //Alias
     let Application = PIXI.Application,
         Container = PIXI.Container,
@@ -39,6 +41,8 @@
     } else {
         console.log('Supported')
     }
+    loader
+        .add('scorpio', 'src/scorpio/stance_01.png')
     loader.onProgress.add(loadProgressHandler)
 
     function init() {
@@ -51,6 +55,7 @@
             view: document.getElementById("game-canvas")
         });
         app.renderer.backgroundColor = "0x6200EA";
+        app.renderer.autoResize = true;
         loader.load(setup);
     }
 
@@ -73,6 +78,14 @@
         gameOverScene = new Container();
         app.stage.addChild(gameOverScene);
         gameOverScene.visible = false;
+
+        var scorpio = new Sprite(resources["scorpio"].texture);
+        scorpio.x = (w / 2) - (scorpio.width / 2);
+        scorpio.y = (h / 2) - (scorpio.height / 2);
+        scorpio.scale.set(0.5, 0.5);
+        scorpio.rotation = 0.3;
+
+        gameScene.addChild(scorpio)
 
         //Estado del juego: `play`
         state = play;
