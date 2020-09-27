@@ -1,13 +1,11 @@
 # Tutorial Pixi js
 Este tutorial esta basado en el juego clásico *Mortal Kombat*.
 
-**Tabla de contenidos**
+**Contenido**
 
-
-[TOC]
-#1. Setup
-#2. Sprites
-##Crear un Sprite
+- 1. Setup
+- 2. Sprites
+   - Crear un Sprite
 ##Mostrar un Sprite
 ##Propiedades
 #3. AnimatedSprites
