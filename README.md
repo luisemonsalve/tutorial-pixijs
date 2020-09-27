@@ -27,7 +27,6 @@ Hay dos formas muy utilizadas para crear un AnimatedSprite
     sheet_liu = resources["src/atlas-liukang.json"].spritesheet;
     var liukang_s = new AnimatedSprite(sheet_liu.animations['liu_stance']);
 ```
-> Se cargan las imágenes desde que se abre el documento
 
 ## Propiedades 
 - **Velocidad de animación**<br>
