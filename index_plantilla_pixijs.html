@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mortal Kombat</title>
+</head>
+
+
+<body onload="init();" style="margin: 0;">
+    <div align="center" id="gameCanvas">
+        <canvas id="game-canvas"></canvas>
+    </div>
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/5.3.3/pixi.min.js"
+    integrity="sha512-J7UHpLx39bpqtP+aWP6yIuXroFk0XPkDQaS9zDthM4TVeaXstWYh556gxsXwwIwpAPSoKqVHW+eqz3B93SpyKg=="
+    crossorigin="anonymous"></script>
+<script>
+    //Alias
+    let Application = PIXI.Application,
+        Container = PIXI.Container,
+        loader = PIXI.Loader.shared,
+        resources = PIXI.Loader.shared.resources,
+        TextureCache = PIXI.utils.TextureCache,
+        Text = PIXI.Text,
+        Sprite = PIXI.Sprite,
+        Rectangle = PIXI.Rectangle,
+        Graphics = PIXI.Graphics,
+        TilingSprite = PIXI.TilingSprite,
+        AnimatedSprite = PIXI.AnimatedSprite,
+        TextStyle = PIXI.TextStyle;
+
+    var app;
+    var fCanvas = false;
+    if (!PIXI.utils.isWebGLSupported()) {
+        console.log('Not Support')
+        fCanvas = true;
+    } else {
+        console.log('Supported')
+    }
+    loader
+        .add("atlas.json")
+    loader.onProgress.add(loadProgressHandler)
+
+    function init() {
+        //Crea una aplicacion Pixi
+        app = new Application({
+            antialias: true,
+            transparent: false,
+            resolution: 1,
+            forceCanvas: fCanvas,
+            view: document.getElementById("game-canvas")
+        });
+        app.renderer.backgroundColor = "0x5DA6C2";
+        app.renderer.autoDensity = true;
+        loader.load(setup);
+    }
+
+    function loadProgressHandler(loader, resource) {
+
+        //Display the file `name` currently being loaded
+        //console.log("loading: " + resource.name);
+
+        //Display the percentage of files currently loaded
+        console.log("progress: " + loader.progress + "%");
+    }
+
+    function setup() {
+        sheet = resources["atlas.json"].spritesheet;
+
+        //Crea escena principal
+        gameScene = new Container();
+        app.stage.addChild(gameScene);
+
+        //Crea escena final
+        gameOverScene = new Container();
+        app.stage.addChild(gameOverScene);
+        gameOverScene.visible = false;
+
+        //Estado del juego: `play`
+        state = play;
+
+        //Inicia gameloop
+        app.ticker.add(delta => gameLoop(delta));
+    }
+
+    function gameLoop(delta) {
+        state(delta);
+    }
+
+    function play(delta) {
+
+    }
+
+    function pause(delta) {
+
+    }
+
+    //Listener del teclado
+    function keyboardListener() {
+        let right = keyboard("ArrowRight"),
+            left = keyboard("ArrowLeft"),
+            space = keyboard(" "),
+            x = keyboard("x");
+
+        right.press = () => {
+            //Tecla derecha presionada
+        };
+        right.release = () => {
+            //Tecla derecha liberada
+        };
+        left.press = () => {
+
+        };
+        left.release = () => {
+
+        };
+        space.press = () => {
+
+        };
+        x.release = () => {
+
+        };
+    }
+
+    //Capturar si una tecla es presionada o liberada
+    function keyboard(value) {
+        let key = {};
+        key.value = value;
+        key.isDown = false;
+        key.isUp = true;
+        key.press = undefined;
+        key.release = undefined;
+        //The `downHandler`
+        key.downHandler = event => {
+            if (event.key === key.value) {
+                if (key.isUp && key.press) key.press();
+                key.isDown = true;
+                key.isUp = false;
+                event.preventDefault();
+            }
+        };
+
+        //The `upHandler`
+        key.upHandler = event => {
+            if (event.key === key.value) {
+                if (key.isDown && key.release) key.release();
+                key.isDown = false;
+                key.isUp = true;
+                event.preventDefault();
+            }
+        };
+
+        //Attach event listeners
+        const downListener = key.downHandler.bind(key);
+        const upListener = key.upHandler.bind(key);
+
+        window.addEventListener(
+            "keydown", downListener, false
+        );
+        window.addEventListener(
+            "keyup", upListener, false
+        );
+
+        // Detach event listeners
+        key.unsubscribe = () => {
+            window.removeEventListener("keydown", downListener);
+            window.removeEventListener("keyup", upListener);
+        };
+
+        return key;
+    }
+
+    //Función para capturar colición 
+    function hitTestRectangle(r1, r2) {
+
+        //Define the variables we'll need to calculate
+        let hit, combinedHalfWidths, combinedHalfHeights, vx, vy;
+
+        //hit will determine whether there's a collision
+        hit = false;
+
+        //Find the center points of each sprite
+        r1.centerX = r1.x + r1.width / 2;
+        r1.centerY = r1.y + r1.height / 2;
+        r2.centerX = r2.x + r2.width / 2;
+        r2.centerY = r2.y + r2.height / 2;
+
+        //Find the half-widths and half-heights of each sprite
+        r1.halfWidth = r1.width / 2;
+        r1.halfHeight = r1.height / 2;
+        r2.halfWidth = r2.width / 2;
+        r2.halfHeight = r2.height / 2;
+
+        //Calculate the distance vector between the sprites
+        vx = r1.centerX - r2.centerX;
+        vy = r1.centerY - r2.centerY;
+
+        //Figure out the combined half-widths and half-heights
+        combinedHalfWidths = r1.halfWidth + r2.halfWidth;
+        combinedHalfHeights = r1.halfHeight + r2.halfHeight;
+
+        //Check for a collision on the x axis
+        if (Math.abs(vx) < combinedHalfWidths) {
+
+            //A collision might be occurring. Check for a collision on the y axis
+            if (Math.abs(vy) < combinedHalfHeights) {
+
+                //There's definitely a collision happening
+                hit = true;
+            } else {
+
+                //There's no collision on the y axis
+                hit = false;
+            }
+        } else {
+
+            //There's no collision on the x axis
+            hit = false;
+        }
+
+        //`hit` will be either `true` or `false`
+        return hit;
+    };
+
+    //Función para indicar si dos sprites se estan tocando
+    function collision(x1, w1, x2, w2) {
+        /* 
+        x1 = posición de elemento 1
+        x2 = posición de elemento 2
+        w1 = width de elemento 1
+        w2 = width de elemento 2
+         */
+        if ((x1 + w1) >= x2 - w2) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    //Función para indicar si un sprite está adentro de otro
+    function contain(sprite, container) {
+        /* 
+            Puede usuarse para limitar el movimiento de un sprite en la pantalla,
+            se agrega el siguiente código en el gameloop
+
+            if (contain(sprite, { x: 0, y: 0, width: w, height: h })) {
+                    sprite.vx = 0;
+                    sprite.vy = 0;
+            }    
+         */
+        let collision = undefined;
+
+        //Left
+        if (sprite.x < container.x) {
+            sprite.x = container.x;
+            collision = "left";
+        }
+
+        //Top
+        if (sprite.y < container.y) {
+            sprite.y = container.y;
+            collision = "top";
+        }
+
+        //Right
+        if (sprite.x + sprite.width > container.width) {
+            sprite.x = container.width - sprite.width;
+            collision = "right";
+        }
+
+        //Bottom
+        if (sprite.y + sprite.height > container.height) {
+            sprite.y = container.height - sprite.height;
+            collision = "bottom";
+        }
+
+        //Return the `collision` value
+        return collision;
+    }
+
+    //Cambiar de estado al salir de la pantalla 
+    function onVisibilityChange(callback) {
+        var visible = true;
+
+        if (!callback) {
+            throw new Error('no callback given');
+        }
+
+        function focused() {
+            if (!visible) {
+                callback(visible = true);
+            }
+        }
+
+        function unfocused() {
+            if (visible) {
+                callback(visible = false);
+            }
+        }
+
+        // Standards:
+        if ('hidden' in document) {
+            document.addEventListener('visibilitychange',
+                function () {
+                    (document.hidden ? unfocused : focused)()
+                });
+        }
+        if ('mozHidden' in document) {
+            document.addEventListener('mozvisibilitychange',
+                function () {
+                    (document.mozHidden ? unfocused : focused)()
+                });
+        }
+        if ('webkitHidden' in document) {
+            document.addEventListener('webkitvisibilitychange',
+                function () {
+                    (document.webkitHidden ? unfocused : focused)()
+                });
+        }
+        if ('msHidden' in document) {
+            document.addEventListener('msvisibilitychange',
+                function () {
+                    (document.msHidden ? unfocused : focused)()
+                });
+        }
+        // IE 9 and lower:
+        if ('onfocusin' in document) {
+            document.onfocusin = focused;
+            document.onfocusout = unfocused;
+        }
+        // All others:
+        window.onpageshow = window.onfocus = focused;
+        window.onpagehide = window.onblur = unfocused;
+    };
+
+    onVisibilityChange(function (visible) {
+        if (!visible) {
+            state = pause;
+        } else {
+            state = play;
+        }
+    });
+</script>
+
+</html>
