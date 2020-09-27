@@ -39,8 +39,6 @@
     } else {
         console.log('Supported')
     }
-    loader
-        .add("atlas.json")
     loader.onProgress.add(loadProgressHandler)
 
     function init() {
@@ -52,8 +50,7 @@
             forceCanvas: fCanvas,
             view: document.getElementById("game-canvas")
         });
-        app.renderer.backgroundColor = "0x5DA6C2";
-        app.renderer.autoDensity = true;
+        app.renderer.backgroundColor = "0x6200EA";
         loader.load(setup);
     }
 
@@ -67,7 +64,6 @@
     }
 
     function setup() {
-        sheet = resources["atlas.json"].spritesheet;
 
         //Crea escena principal
         gameScene = new Container();
