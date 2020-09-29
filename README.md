@@ -76,6 +76,7 @@ Para reducir el tamaño a la mitad :
     scorpio.scale.y = 0.5;
 ```
 > También es posible usar scorpio.scale.set(x, y)
+> Para invertir en el eje x un sprite se puede usar sprite.scale.x *= -1;
 
 - **Rotación** <br>
 La rotación se hace a traves de la propiedad **sprite.rotation**, se asigna un valor en radianes.
