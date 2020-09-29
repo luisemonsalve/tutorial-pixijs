@@ -16,10 +16,8 @@ Este tutorial esta basado en el juego clásico *Mortal Kombat*.
    - Eventos de teclado<br>
 - [5. Colisiones](https://github.com/luisemonsalve/tutorial-pixijs/tree/5-Colisiones)<br>
 - [6. Formas y textos](https://github.com/luisemonsalve/tutorial-pixijs/tree/6-FormasTextos)<br>
-   - Crear un Forma
-   - Propiedades
    - Crear un Texto
-   - Propiedades<br>
+   - Crear un Forma<br>
 - [7. Extras](https://github.com/luisemonsalve/tutorial-pixijs/tree/7-Extras)<br>
    - Hold and Drag
    - Filters
