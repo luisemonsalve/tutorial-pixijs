@@ -18,6 +18,3 @@ Este tutorial esta basado en el juego clásico *Mortal Kombat*.
 - [6. Formas y textos](https://github.com/luisemonsalve/tutorial-pixijs/tree/6-FormasTextos)<br>
    - Crear un Texto
    - Crear un Forma<br>
-- [7. Extras](https://github.com/luisemonsalve/tutorial-pixijs/tree/7-Extras)<br>
-   - Hold and Drag
-   - Filters
