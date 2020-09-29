@@ -91,7 +91,7 @@ Para cambiar el punto desde donde se rota se puede hacer de dos forma, usando la
 
     scorpio.pivot.set(10, 10)
 ```
-- **Otras propiedades**
+- **Otras propiedades**<br>
 Las siguientes propiedades serán utiles pero no hay necesidad de explicarlas
 ```javascript 
     sprite.visible = false;
