@@ -5,6 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mortal Kombat</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+    </style>
 </head>
 
 
@@ -37,6 +40,60 @@
 
     var app;
     var fCanvas = false;
+    const titleStyle = new TextStyle({
+        fontFamily: "Press Start 2P",
+        fontSize: 26,
+        fill: "white",
+        stroke: '#000000',
+        strokeThickness: 3,
+    });
+    const pStyle = new TextStyle({
+        fontFamily: "Press Start 2P",
+        fontSize: 15,
+        fill: "#eeeeee",
+    });
+    const ply2Movemets = [{
+        action: 'nothing',
+        time: 2000
+    }, {
+        action: 'move_right',
+        time: 1000
+    }, {
+        action: 'hit',
+        time: 800
+    }, {
+        action: 'move_right',
+        time: 1000
+    }, {
+        action: 'hit',
+        time: 800
+    }, {
+        action: 'nothing',
+        time: 500
+    }, {
+        action: 'hit',
+        time: 800
+    }, {
+        action: 'move_left',
+        time: 1000
+    }, {
+        action: 'hit',
+        time: 800
+    }, {
+        action: 'nothing',
+        time: 500
+    }, ]
+    var actualMov = 0;
+
+
+
+    if (window.innerWidth <= 916) {
+        isResponsive = true;
+        w = window.innerWidth;
+    }
+    if (window.innerHeight <= 540) {
+        h = window.innerHeight;
+    }
     if (!PIXI.utils.isWebGLSupported()) {
         console.log('Not Support')
         fCanvas = true;
@@ -46,6 +103,7 @@
     loader
         .add("src/atlas-scorpio.json")
         .add("src/atlas-liukang.json")
+        .add("src/atlas-fatality.json")
         .add("src/bg/bg0.jpg")
         .add("src/bg/bg1.jpg")
         .add("src/bg/bg2.jpg")
@@ -54,6 +112,7 @@
         .add("src/bg/bg5.jpg")
         .add("src/bg/bg6.jpg")
         .add("src/bg/bg7.jpg")
+        .add("bar", "src/bar.gif")
     loader.onProgress.add(loadProgressHandler)
 
     function init() {
@@ -83,17 +142,29 @@
     function setup() {
         sheet_liu = resources["src/atlas-liukang.json"].spritesheet;
         sheet_scorpio = resources["src/atlas-scorpio.json"].spritesheet;
+        sheet_fatality = resources["src/atlas-fatality.json"].spritesheet;
 
         //Crea escena principal
         gameScene = new Container();
         app.stage.addChild(gameScene);
 
         //Crea escena final
-        gameOverScene = new Container();
-        app.stage.addChild(gameOverScene);
-        gameOverScene.visible = false;
+        pausedScene = new Container();
+        app.stage.addChild(pausedScene);
+        pausedScene.visible = false;
 
-        //Elmentos del stage
+        gameOverScene = new Container();
+
+        fatality = new AnimatedSprite(sheet_fatality.animations['fatallity']);
+        fatality.x = w / 2;
+        fatality.y = h / 2 - fatality.height;
+        fatality.animationSpeed = 0.1;
+        fatality.loop = false;
+        gameOverScene.addChild(fatality);
+
+        createPausedScene();
+
+        //Elementos del stage
         let bgImages = ["src/bg/bg0.jpg", "src/bg/bg1.jpg", "src/bg/bg2.jpg", "src/bg/bg3.jpg", "src/bg/bg4.jpg",
             "src/bg/bg5.jpg", "src/bg/bg6.jpg", "src/bg/bg7.jpg"
         ];
@@ -109,77 +180,12 @@
         bg.play()
         gameScene.addChild(bg)
 
-        //Personaje 1: Scorpio
-        scorpio = new Container();
-        scorpio_s = new AnimatedSprite(sheet_scorpio.animations['stance']);
-        scorpio_s.animationSpeed = 0.2;
-        scorpio_s.play();
-        scorpio_s.loop = true;
-        scorpio.addChild(scorpio_s)
+        createPlayer1();
 
-        scorpio_w = new AnimatedSprite(sheet_scorpio.animations['walking']);
-        scorpio_w.animationSpeed = 0.2;
-        scorpio_w.play();
-        scorpio_w.loop = true;
-        scorpio_w.visible = false;
-        scorpio.addChild(scorpio_w)
+        createPlayer2();
+        addBars();
 
-        scorpio_k = new AnimatedSprite(sheet_scorpio.animations['kick']);
-        scorpio_k.animationSpeed = 0.2;
-        scorpio_k.loop = true;
-        scorpio_k.visible = false;
-        scorpio_k.onLoop = function () {
-            scorpio_k.stop();
-            scorpio_k.visible = false;
-            isWalkLock = false;
-            if (collision(scorpio.x, scorpio_k.width, liukang.x, -liukang.width)) {
-                liukang_s.visible = false;
-                liukang_h.visible = true;
-                liukang_h.play();
-                liukang.vx = 1;
-                playSound('hit1', 1);
-            }
-            if (isWalking) {
-                scorpio_w.visible = true;
-            } else {
-                scorpio_s.visible = true;
-            }
-        };
-        scorpio.addChild(scorpio_k)
-
-        scorpio.y = h - scorpio.height - 25
-        scorpio.x = w / 3 - scorpio.width / 2
-        scorpio.vx = 0
-        gameScene.addChild(scorpio)
-
-        //Personaje 2: Liu Kang
-
-        liukang = new Container();
-        liukang_s = new AnimatedSprite(sheet_liu.animations['liu_stance']);
-        liukang_s.animationSpeed = 0.2;
-        liukang_s.play();
-        liukang_s.loop = true;
-        // liukang_s.visible = false;
-        liukang.addChild(liukang_s);
-
-        liukang_h = new AnimatedSprite(sheet_liu.animations['liu_beaing_hit']);
-        liukang_h.animationSpeed = 0.2;
-        liukang_h.loop = true;
-        liukang_h.visible = false;
-        liukang_h.onLoop = function () {
-            liukang_h.stop();
-            liukang_h.visible = false;
-            liukang_s.visible = true;
-            liukang.vx = 0;
-        };
-        liukang.addChild(liukang_h)
-
-        liukang.y = h - liukang.height - 25
-        liukang.x = 2 * w / 3 + liukang.width / 2
-        liukang.vx = 0
-        liukang.scale.x *= -1;
-        gameScene.addChild(liukang)
-
+        movePlayer2();
 
         keyboardListener();
 
@@ -214,9 +220,234 @@
             })) {
             liukang.vx = 0;
         }
+        if (lifePlayer2.width >= 160) {
+            gameOverScene.visible = true;
+            fatality.play();
+            playSound('fatality', 1);
+            playSound('end', 1);
+            app.stage.addChild(gameOverScene);
+            state = pause;
+        }
     }
 
     function pause(delta) {
+
+    }
+
+    function createPausedScene() {
+        let title = new Text("Juego pausado", titleStyle);
+        title.x = w / 2 - title.width / 2;
+        title.y = h / 2 - title.height * 4;
+
+        let text = new Text("Pulsa la tecla SPACE para continuar", pStyle);
+        text.x = w / 2 - text.width / 2;
+        text.y = h / 2 - text.height * 2;
+
+
+        let rectangle = new Graphics();
+        rectangle.beginFill(0X161f21);
+        rectangle.alpha = 0.5;
+        rectangle.drawRect(0, 0, w, h);
+        rectangle.endFill();
+        pausedScene.addChild(rectangle);
+
+        pausedScene.addChild(title);
+        pausedScene.addChild(text);
+    }
+
+    function addBars() {
+
+        bar = new Sprite(resources.bar.texture)
+        containerBarPly1 = new Container();
+        rectangle = new Graphics();
+        rectangle.beginFill(0x9b0000);
+        rectangle.drawRect(3, bar.height * 0.20, 1, bar.height * 0.6);
+        rectangle.endFill();
+        containerBarPly1.addChild(bar);
+        containerBarPly1.addChild(rectangle);
+        containerBarPly1.x = 30 + containerBarPly1.width
+        containerBarPly1.y = 30
+        containerBarPly1.scale.x *= -1
+        gameScene.addChild(containerBarPly1)
+
+        bar2 = new Sprite(resources.bar.texture)
+        containerBarPly2 = new Container();
+        containerBarPly2.y = 30
+        lifePlayer2 = new Graphics();
+        lifePlayer2.beginFill(0x9b0000);
+        lifePlayer2.drawRect(3, bar2.height * 0.20, 1,
+            bar2.height * 0.6);
+        lifePlayer2.endFill();
+        containerBarPly2.addChild(bar2);
+        containerBarPly2.addChild(lifePlayer2);
+        containerBarPly2.x = w - 30 - containerBarPly2.width
+        gameScene.addChild(containerBarPly2)
+
+    }
+
+    function pauseGame() {
+        state = pause;
+        pausedScene.visible = true;
+        movePlayer2();
+    }
+
+    function restoreGame() {
+        state = play;
+        pausedScene.visible = false;
+    }
+
+    function createPlayer1() {
+        //Personaje 1: Scorpio
+        scorpio = new Container();
+        scorpio_s = new AnimatedSprite(sheet_scorpio.animations['stance']);
+        scorpio_s.animationSpeed = 0.2;
+        scorpio_s.play();
+        scorpio_s.loop = true;
+        scorpio.addChild(scorpio_s)
+
+        scorpio_w = new AnimatedSprite(sheet_scorpio.animations['walking']);
+        scorpio_w.animationSpeed = 0.2;
+        scorpio_w.play();
+        scorpio_w.loop = true;
+        scorpio_w.visible = false;
+        scorpio.addChild(scorpio_w)
+
+        scorpio_k = new AnimatedSprite(sheet_scorpio.animations['kick']);
+        scorpio_k.animationSpeed = 0.2;
+        scorpio_k.loop = true;
+        scorpio_k.visible = false;
+        scorpio_k.onLoop = function () {
+            scorpio_k.stop();
+            scorpio_k.visible = false;
+            isWalkLock = false;
+            if (collision(scorpio.x, scorpio_k.width, liukang.x, -liukang.width)) {
+                liukang_s.visible = false;
+                liukang_h.visible = true;
+                liukang_h.play();
+                liukang.vx = 1;
+                playSound('hit1', 1);
+                lifePlayer2.width += 20;
+                lifePlayer2.x = -(lifePlayer2.width * 3) + 3
+            }
+            if (isWalking) {
+                scorpio_w.visible = true;
+            } else {
+                scorpio_s.visible = true;
+            }
+        };
+        scorpio.addChild(scorpio_k)
+
+        scorpio.y = h - scorpio.height - 25
+        scorpio.x = w / 3 - scorpio.width / 2
+        scorpio.vx = 0
+        gameScene.addChild(scorpio)
+    }
+
+    function createPlayer2() {
+        //Personaje 2: Liu Kang
+
+        liukang = new Container();
+        liukang_s = new AnimatedSprite(sheet_liu.animations['liu_stance']);
+        liukang_s.animationSpeed = 0.2;
+        liukang_s.play();
+        liukang_s.loop = true;
+        // liukang_s.visible = false;
+        liukang.addChild(liukang_s);
+
+        liukang_w = new AnimatedSprite(sheet_liu.animations['liu_walking']);
+        liukang_w.animationSpeed = 0.2;
+        liukang_w.play();
+        liukang_w.loop = true;
+        liukang_w.visible = false;
+        liukang.addChild(liukang_w)
+
+        liukang_k = new AnimatedSprite(sheet_liu.animations['liu_punching']);
+        liukang_k.animationSpeed = 0.2;
+        liukang_k.play();
+        liukang_k.loop = true;
+        liukang_k.visible = false;
+        liukang_k.onLoop = function () {
+            liukang_k.stop();
+            liukang_k.visible = false;
+            liukang_s.visible = true;
+        };
+        liukang.addChild(liukang_k);
+
+        liukang_h = new AnimatedSprite(sheet_liu.animations['liu_beaing_hit']);
+        liukang_h.animationSpeed = 0.2;
+        liukang_h.loop = true;
+        liukang_h.visible = false;
+        liukang_h.onLoop = function () {
+            liukang_h.stop();
+            liukang_h.visible = false;
+            liukang_s.visible = true;
+            liukang.vx = 0;
+        };
+        liukang.addChild(liukang_h)
+
+        liukang.y = h - liukang.height - 25
+        liukang.x = 2 * w / 3 + liukang.width / 2
+        liukang.vx = 0
+        liukang.scale.x *= -1;
+        gameScene.addChild(liukang)
+    }
+
+    function movePlayer2() {
+        let move = ply2Movemets[actualMov];
+        if (actualMov < ply2Movemets.length && state == play) {
+            switch (move.action) {
+                case 'move_right':
+                    liukang.vx = 1.6
+                    liukang_s.visible = false;
+                    liukang_w.visible = true;
+                    liukang_w.animationSpeed = -0.16;
+                    setTimeout(() => {
+                        liukang.vx = 0
+                        liukang_w.visible = false;
+                        liukang_s.visible = true;
+                        actualMov++
+                        movePlayer2();
+                    }, move.time);
+                    break;
+
+                case 'move_left':
+                    liukang.vx = -1.6
+                    liukang_s.visible = false;
+                    liukang_w.visible = true;
+                    liukang_w.animationSpeed = 0.16;
+                    setTimeout(() => {
+                        liukang.vx = 0
+                        liukang_w.visible = false;
+                        liukang_s.visible = true;
+                        actualMov++
+                        movePlayer2();
+                    }, move.time);
+                    break;
+
+                case 'hit':
+                    liukang_s.visible = false;
+                    liukang_w.visible = false;
+                    liukang_k.visible = true;
+                    liukang_k.play();
+                    playSound('haa_liu', 1)
+                    playSound('puño_liu', 0.5)
+                    setTimeout(() => {
+                        actualMov++
+                        movePlayer2();
+                    }, move.time);
+                    break;
+                case 'nothing':
+                    setTimeout(() => {
+                        actualMov++
+                        movePlayer2();
+                    }, move.time);
+                    break;
+
+                default:
+                    console.log('default');
+                    break;
+            }
+        }
 
     }
 
@@ -263,15 +494,20 @@
             }
         };
         space.press = () => {
-            playSound('haa', 1)
-            playSound('patada', 0.5)
-            isWalkLock = true;
-            scorpio_s.visible = false;
-            scorpio_k.visible = true;
-            scorpio_w.visible = false;
-            scorpio_k.play();
-            playSound('haa', 1)
-            playSound('patada', 0.5)
+            if (state == pause) {
+                restoreGame();
+            } else {
+                playSound('haa', 1)
+                playSound('patada', 0.5)
+                isWalkLock = true;
+                scorpio_s.visible = false;
+                scorpio_k.visible = true;
+                scorpio_w.visible = false;
+                scorpio_k.play();
+                playSound('haa', 1)
+                playSound('patada', 0.5)
+            }
+
         };
     }
 
@@ -488,9 +724,9 @@
 
     onVisibilityChange(function (visible) {
         if (!visible) {
-            state = pause;
+            pauseGame();
         } else {
-            state = play;
+            //state = play;
         }
     });
 </script>
@@ -503,6 +739,8 @@
         createjs.Sound.registerSound("sounds/hitsounds/mk2-00103.mp3", 'hit1');
         createjs.Sound.registerSound("sounds/hitsounds/mk2-00139.mp3", 'puño_liu');
         createjs.Sound.registerSound("sounds/hitsounds/mk2-00109.mp3", 'hit2');
+        createjs.Sound.registerSound("sounds/shaokahn/mk2-00948.mp3", 'fatality');
+        createjs.Sound.registerSound("sounds/musiccues/mk2-end1a.mp3", 'end');
     }
 
     function playSound(soundID, vol) {
