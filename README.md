@@ -101,3 +101,11 @@ Las siguientes propiedades serán utiles pero no hay necesidad de explicarlas
 
 ## Referentes:
 - [PIXI.Sprite](https://pixijs.download/dev/docs/PIXI.Sprite.html "PIXI.Sprite")
+
+
+        const innerHeight = screenSizeService.getHeight();
+        const innerWidth = screenSizeService.getWidth();
+        const resolutionnumber = window.innerWidth <= 1100 ? 1 : 2;
+        pixi.settings.RESOLUTION = window.devicePixelRatio;
+        pixi.settings.SCALE_MODE = pixi.SCALE_MODES.LINEAR;
+        pixi.settings.ROUND_PIXELS = true;
